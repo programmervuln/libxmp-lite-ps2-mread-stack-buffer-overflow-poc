@@ -2,6 +2,29 @@
 Overview
 
 This repository contains a minimal proof of concept (PoC) demonstrating a stack-buffer overflow in a reproduction of the mread() implementation from tatokis/libxmp-lite-ps2.
+vulnerable code is at:
+https://github.com/tatokis/libxmp-lite-ps2/blob/master/src/memio.c
+
+vulnerable code snippet:
+size_t mread(void *buf, size_t size, size_t num, MFILE *m)
+{
+    size_t should_read = size * num;
+    ptrdiff_t can_read = CAN_READ(m);
+
+    if (!size || !num || can_read <= 0) {
+        return 0;
+    }
+
+    if (should_read > can_read) {
+        should_read = can_read;
+    }
+
+    /* Vulnerable: destination buffer capacity is not validated */
+    memcpy(buf, m->start + m->pos, should_read);
+    m->pos += should_read;
+
+    return should_read / size;
+}
 
 The issue occurs when the number of bytes copied by mread() exceeds the capacity of the destination buffer. The function limits the copy length according to the remaining input size but does not receive or validate the destination buffer's capacity.
 
