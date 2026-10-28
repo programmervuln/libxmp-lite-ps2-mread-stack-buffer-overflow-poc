@@ -1,0 +1,53 @@
+./overflow_poc 
+size*num = 0x80000004
+=================================================================
+==14064==ERROR: AddressSanitizer: stack-buffer-overflow on address 0xff84e990 at pc 0x616aee81 bp 0xff84e878 sp 0xff84e460
+WRITE of size 256 at 0xff84e990 thread T0
+    #0 0x616aee80 in __asan_memcpy (/home/lloyd/Documents/libxmp-lite-ps2-master/overflow_poc+0x99e80) (BuildId: 9f00d049c723cb40517dfb5efa67ea0fc92056fb)
+    #1 0x616ed671 in mread /home/lloyd/Documents/libxmp-lite-ps2-master/overflow1.c:34:2
+    #2 0x616ecfd5 in main /home/lloyd/Documents/libxmp-lite-ps2-master/overflow1.c:67:15
+    #3 0xf651f518  (/lib/i386-linux-gnu/libc.so.6+0x21518) (BuildId: f0f91934ef6cdbb13f86384ba62af60377239797)
+    #4 0xf651f5f2 in __libc_start_main (/lib/i386-linux-gnu/libc.so.6+0x215f2) (BuildId: f0f91934ef6cdbb13f86384ba62af60377239797)
+    #5 0x6162e36a in _start (/home/lloyd/Documents/libxmp-lite-ps2-master/overflow_poc+0x1936a) (BuildId: 9f00d049c723cb40517dfb5efa67ea0fc92056fb)
+
+Address 0xff84e990 is located in stack of thread T0 at offset 144 in frame
+    #0 0x616ecdef in main /home/lloyd/Documents/libxmp-lite-ps2-master/overflow1.c:56
+
+  This frame has 1 object(s):
+    [16, 144) 'out' (line 61) <== Memory access at offset 144 overflows this variable
+HINT: this may be a false positive if your program uses some custom stack unwind mechanism, swapcontext or vfork
+      (longjmp and C++ exceptions *are* supported)
+SUMMARY: AddressSanitizer: stack-buffer-overflow (/home/lloyd/Documents/libxmp-lite-ps2-master/overflow_poc+0x99e80) (BuildId: 9f00d049c723cb40517dfb5efa67ea0fc92056fb) in __asan_memcpy
+Shadow bytes around the buggy address:
+  0x3ff09ce0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x3ff09cf0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x3ff09d00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x3ff09d10: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x3ff09d20: f1 f1 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x3ff09d30: 00 00[f3]f3 f3 f3 00 00 00 00 00 00 00 00 00 00
+  0x3ff09d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x3ff09d50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x3ff09d60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x3ff09d70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x3ff09d80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==14064==ABORTING
+
